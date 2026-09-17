@@ -11,6 +11,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { AppHeader } from "@/components/app-header";
 import { PrimaryButton } from "@/components/ui/primary-button";
 import { useDebouncedValue } from "@/core/use-debounced-value";
 import { useClients } from "@/features/clients/hooks";
@@ -38,44 +39,47 @@ export default function ClientsListScreen() {
   const { data, isLoading, isFetching, refetch } = useClients(debounced || undefined);
 
   return (
-    <SafeAreaView className="flex-1 bg-slate-50" edges={["bottom"]}>
-      <View className="px-5 pt-4">
-        <View className="mb-4 h-12 flex-row items-center rounded-xl border border-slate-200 bg-white px-3">
-          <Ionicons name="search-outline" size={18} color="#94a3b8" />
-          <TextInput
-            value={search}
-            onChangeText={setSearch}
-            placeholder="Search name, mobile, or ID"
-            placeholderTextColor="#94a3b8"
-            className="ml-2 flex-1 text-base text-slate-900"
-          />
+    <View className="flex-1 bg-slate-50">
+      <AppHeader title="Clients" showBack onBack={() => router.replace("/home")} />
+      <SafeAreaView className="flex-1" edges={["bottom"]}>
+        <View className="px-5 pt-4">
+          <View className="mb-4 h-12 flex-row items-center rounded-xl border border-slate-200 bg-white px-3">
+            <Ionicons name="search-outline" size={18} color="#94a3b8" />
+            <TextInput
+              value={search}
+              onChangeText={setSearch}
+              placeholder="Search name, mobile, or ID"
+              placeholderTextColor="#94a3b8"
+              className="ml-2 flex-1 text-base text-slate-900"
+            />
+          </View>
         </View>
-      </View>
 
-      <View className="flex-1 px-5">
-        {isLoading ? (
-          <ActivityIndicator className="mt-10" color="#162456" />
-        ) : (
-          <FlatList
-            data={data ?? []}
-            keyExtractor={(item) => item.unitId}
-            renderItem={({ item }) => <ClientRow item={item} />}
-            refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
-            ListEmptyComponent={
-              <View className="mt-16 items-center px-6">
-                <Ionicons name="people-outline" size={28} color="#162456" />
-                <Text className="mt-3 text-center text-sm text-slate-500">
-                  {debounced ? "No clients match your search." : "No clients yet."}
-                </Text>
-              </View>
-            }
-          />
-        )}
-      </View>
+        <View className="flex-1 px-5">
+          {isLoading ? (
+            <ActivityIndicator className="mt-10" color="#162456" />
+          ) : (
+            <FlatList
+              data={data ?? []}
+              keyExtractor={(item) => item.unitId}
+              renderItem={({ item }) => <ClientRow item={item} />}
+              refreshControl={<RefreshControl refreshing={isFetching} onRefresh={refetch} />}
+              ListEmptyComponent={
+                <View className="mt-16 items-center px-6">
+                  <Ionicons name="people-outline" size={28} color="#162456" />
+                  <Text className="mt-3 text-center text-sm text-slate-500">
+                    {debounced ? "No clients match your search." : "No clients yet."}
+                  </Text>
+                </View>
+              }
+            />
+          )}
+        </View>
 
-      <View className="px-5 pb-4 pt-2">
-        <PrimaryButton label="New Client" onPress={() => router.push("/clients/new")} />
-      </View>
-    </SafeAreaView>
+        <View className="px-5 pb-4 pt-2">
+          <PrimaryButton label="New Client" onPress={() => router.push("/clients/new")} />
+        </View>
+      </SafeAreaView>
+    </View>
   );
 }

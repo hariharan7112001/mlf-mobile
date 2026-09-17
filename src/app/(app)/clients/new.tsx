@@ -2,6 +2,7 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { AppHeader } from "@/components/app-header";
 import { FormScrollView } from "@/components/form-scroll-view";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { PillSelect } from "@/components/ui/pill-select";
@@ -75,9 +76,11 @@ export default function NewClientScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={["bottom"]}>
-      <FormScrollView>
-        <ErrorMessage message={error} />
+    <View className="flex-1 bg-white">
+      <AppHeader title="New Client" showBack />
+      <SafeAreaView className="flex-1" edges={["bottom"]}>
+        <FormScrollView>
+          <ErrorMessage message={error} />
 
         <TextField
           label="Full name"
@@ -169,6 +172,7 @@ export default function NewClientScreen() {
           />
         </View>
       </FormScrollView>
-    </SafeAreaView>
+      </SafeAreaView>
+    </View>
   );
 }

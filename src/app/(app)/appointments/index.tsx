@@ -3,6 +3,7 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, FlatList, Pressable, RefreshControl, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { AppHeader } from "@/components/app-header";
 import { PrimaryButton } from "@/components/ui/primary-button";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { useAppointments } from "@/features/appointments/hooks";
@@ -53,7 +54,9 @@ export default function AppointmentsListScreen() {
   const { data, isLoading, isFetching, refetch } = useAppointments(status);
 
   return (
-    <SafeAreaView className="flex-1 bg-slate-50" edges={["bottom"]}>
+    <View className="flex-1 bg-slate-50">
+      <AppHeader title="Appointments" showBack onBack={() => router.replace("/home")} />
+      <SafeAreaView className="flex-1" edges={["bottom"]}>
       <View className="flex-row gap-2 px-5 pt-4">
         {FILTERS.map((filter) => {
           const active = filter.value === status;
@@ -97,6 +100,7 @@ export default function AppointmentsListScreen() {
       <View className="px-5 pb-4 pt-2">
         <PrimaryButton label="Book Appointment" onPress={() => router.push("/appointments/book")} />
       </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </View>
   );
 }

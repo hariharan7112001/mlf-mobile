@@ -39,6 +39,7 @@ export default function AppLayout() {
       <Tabs.Screen name="leave" options={{ href: null }} />
       <Tabs.Screen name="clients" options={{ href: null }} />
       <Tabs.Screen name="appointments" options={{ href: null }} />
+      <Tabs.Screen name="notifications" options={{ href: null }} />
     </Tabs>
   );
 }

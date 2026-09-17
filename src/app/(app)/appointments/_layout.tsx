@@ -1,19 +1,11 @@
-import { router, Stack } from "expo-router";
-import { HeaderBackButton } from "@/components/header-back-button";
-import { PrimaryStack } from "@/components/primary-stack";
+import { Stack } from "expo-router";
 
 export default function AppointmentsLayout() {
   return (
-    <PrimaryStack>
-      <Stack.Screen
-        name="index"
-        options={{
-          title: "Appointments",
-          headerLeft: () => <HeaderBackButton onPress={() => router.replace("/home")} />,
-        }}
-      />
-      <Stack.Screen name="book" options={{ title: "Book Appointment" }} />
-      <Stack.Screen name="[unitId]" options={{ title: "Appointment" }} />
-    </PrimaryStack>
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="index" />
+      <Stack.Screen name="book" />
+      <Stack.Screen name="[unitId]" />
+    </Stack>
   );
 }

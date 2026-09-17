@@ -1,3 +1,4 @@
+import { AppHeader } from "@/components/app-header";
 import { OverflowMenu, type OverflowMenuItem } from "@/components/overflow-menu";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { PrimaryButton } from "@/components/ui/primary-button";
@@ -47,7 +48,7 @@ function AttendanceCard() {
   }
 
   return (
-    <View className="rounded-2xl border border-slate-100 bg-slate-50 p-5">
+    <View className="rounded-2xl border border-slate-100 bg-slate-50 p-5 shadow-sm">
       <View className="mb-3 flex-row items-center justify-between">
         <Text className="text-sm font-medium text-slate-600">Today&apos;s attendance</Text>
         <View
@@ -93,12 +94,12 @@ function QuickAction({ icon, label, onPress }: QuickActionProps) {
   return (
     <Pressable
       onPress={onPress}
-      className="flex-1 items-center rounded-2xl border border-slate-100 bg-white py-5"
+      className="flex-1 items-center rounded-2xl border border-slate-100 bg-white py-5 shadow-sm active:opacity-70"
     >
-      <View className="mb-2 h-11 w-11 items-center justify-center rounded-xl bg-[#162456]/10">
-        <Ionicons name={icon} size={22} color="#162456" />
+      <View className="mb-2 h-12 w-12 items-center justify-center rounded-2xl bg-[#162456]/10">
+        <Ionicons name={icon} size={23} color="#162456" />
       </View>
-      <Text className="text-sm font-medium text-slate-700">{label}</Text>
+      <Text className="text-sm font-semibold text-slate-700">{label}</Text>
     </Pressable>
   );
 }
@@ -141,20 +142,27 @@ export default function HomeScreen() {
 
   return (
     <View className="flex-1 bg-white">
-      <SafeAreaView
-        edges={["top"]}
+      <View
         style={{
           backgroundColor: "#162456",
           borderBottomLeftRadius: 28,
           borderBottomRightRadius: 28,
         }}
       >
-        <View className="flex-row items-center justify-end px-3 pt-1">
-          <Pressable className="mr-1 h-9 w-9 items-center justify-center" hitSlop={8}>
-            <Ionicons name="notifications-outline" size={21} color="#FFFFFF" />
-          </Pressable>
-          <OverflowMenu items={menuItems} />
-        </View>
+        <AppHeader
+          rightContent={
+            <>
+              <Pressable
+                onPress={() => router.push("/notifications" as Href)}
+                className="mr-1 h-9 w-9 items-center justify-center"
+                hitSlop={8}
+              >
+                <Ionicons name="notifications-outline" size={21} color="#FFFFFF" />
+              </Pressable>
+              <OverflowMenu items={menuItems} />
+            </>
+          }
+        />
 
         <View className="px-6 pb-7 pt-1">
           <Text className="text-2xl font-semibold tracking-tight text-white">Welcome back 👋</Text>
@@ -162,7 +170,7 @@ export default function HomeScreen() {
             We&apos;re glad to have you here, {displayName}.
           </Text>
         </View>
-      </SafeAreaView>
+      </View>
 
       <SafeAreaView className="flex-1" edges={["bottom"]}>
         <View className="flex-1 px-6 pb-6 pt-5">

@@ -2,6 +2,7 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { AppHeader } from "@/components/app-header";
 import { FormScrollView } from "@/components/form-scroll-view";
 import { DateField } from "@/components/ui/date-field";
 import { ErrorMessage } from "@/components/ui/error-message";
@@ -52,27 +53,30 @@ export default function ApplyLeaveScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={["bottom"]}>
-      <FormScrollView>
-        <ErrorMessage message={error} />
-        <DateField label="From" value={fromDate} onChange={setFromDate} minimumDate={new Date()} />
-        <DateField
-          label="To"
-          value={toDate}
-          onChange={setToDate}
-          minimumDate={fromDate ?? new Date()}
-        />
-        <TextArea
-          label="Reason (optional)"
-          value={reason}
-          onChange={setReason}
-          placeholder="Why are you taking leave?"
-          maxLength={500}
-        />
-        <View className="mt-2">
-          <PrimaryButton label="Submit" onPress={handleSubmit} loading={applyLeave.isPending} />
-        </View>
-      </FormScrollView>
-    </SafeAreaView>
+    <View className="flex-1 bg-white">
+      <AppHeader title="Apply for Leave" showBack />
+      <SafeAreaView className="flex-1" edges={["bottom"]}>
+        <FormScrollView>
+          <ErrorMessage message={error} />
+          <DateField label="From" value={fromDate} onChange={setFromDate} minimumDate={new Date()} />
+          <DateField
+            label="To"
+            value={toDate}
+            onChange={setToDate}
+            minimumDate={fromDate ?? new Date()}
+          />
+          <TextArea
+            label="Reason (optional)"
+            value={reason}
+            onChange={setReason}
+            placeholder="Why are you taking leave?"
+            maxLength={500}
+          />
+          <View className="mt-2">
+            <PrimaryButton label="Submit" onPress={handleSubmit} loading={applyLeave.isPending} />
+          </View>
+        </FormScrollView>
+      </SafeAreaView>
+    </View>
   );
 }

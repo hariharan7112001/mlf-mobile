@@ -2,6 +2,7 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { AppHeader } from "@/components/app-header";
 import { FormScrollView } from "@/components/form-scroll-view";
 import { DateField } from "@/components/ui/date-field";
 import { ErrorMessage } from "@/components/ui/error-message";
@@ -108,7 +109,9 @@ export default function BookAppointmentScreen() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={["bottom"]}>
+    <View className="flex-1 bg-white">
+      <AppHeader title="Book Appointment" showBack />
+      <SafeAreaView className="flex-1" edges={["bottom"]}>
       <FormScrollView>
         <ErrorMessage message={error} />
 
@@ -234,6 +237,7 @@ export default function BookAppointmentScreen() {
           />
         </View>
       </FormScrollView>
-    </SafeAreaView>
+      </SafeAreaView>
+    </View>
   );
 }

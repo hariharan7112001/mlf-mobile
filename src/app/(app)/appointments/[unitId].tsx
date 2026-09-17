@@ -2,6 +2,7 @@ import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, Alert, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { AppHeader } from "@/components/app-header";
 import { FormScrollView } from "@/components/form-scroll-view";
 import { DateField } from "@/components/ui/date-field";
 import { ErrorMessage } from "@/components/ui/error-message";
@@ -218,14 +219,17 @@ export default function AppointmentDetailScreen() {
   const { data, isLoading } = useAppointment(unitId);
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={["bottom"]}>
-      {isLoading || !data ? (
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator color="#162456" />
-        </View>
-      ) : (
-        <AppointmentEditForm key={unitId} unitId={unitId} appointment={data.appointment} />
-      )}
-    </SafeAreaView>
+    <View className="flex-1 bg-white">
+      <AppHeader title="Appointment" showBack />
+      <SafeAreaView className="flex-1" edges={["bottom"]}>
+        {isLoading || !data ? (
+          <View className="flex-1 items-center justify-center">
+            <ActivityIndicator color="#162456" />
+          </View>
+        ) : (
+          <AppointmentEditForm key={unitId} unitId={unitId} appointment={data.appointment} />
+        )}
+      </SafeAreaView>
+    </View>
   );
 }

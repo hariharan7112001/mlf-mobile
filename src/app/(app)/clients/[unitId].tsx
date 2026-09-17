@@ -2,6 +2,7 @@ import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { AppHeader } from "@/components/app-header";
 import { FormScrollView } from "@/components/form-scroll-view";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { PillSelect } from "@/components/ui/pill-select";
@@ -163,14 +164,17 @@ export default function ClientDetailScreen() {
   const { data, isLoading } = useClient(unitId);
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={["bottom"]}>
-      {isLoading || !data ? (
-        <View className="flex-1 items-center justify-center">
-          <ActivityIndicator color="#162456" />
-        </View>
-      ) : (
-        <ClientEditForm key={unitId} unitId={unitId} detail={data} />
-      )}
-    </SafeAreaView>
+    <View className="flex-1 bg-white">
+      <AppHeader title="Client" showBack />
+      <SafeAreaView className="flex-1" edges={["bottom"]}>
+        {isLoading || !data ? (
+          <View className="flex-1 items-center justify-center">
+            <ActivityIndicator color="#162456" />
+          </View>
+        ) : (
+          <ClientEditForm key={unitId} unitId={unitId} detail={data} />
+        )}
+      </SafeAreaView>
+    </View>
   );
 }
