@@ -15,7 +15,7 @@ export function PrimaryButton({ label, onPress, loading, disabled }: PrimaryButt
       onPress={onPress}
       disabled={isDisabled}
       className={`h-14 items-center justify-center rounded-xl ${
-        isDisabled ? "bg-slate-300" : "bg-[#208AEF]"
+        isDisabled ? "bg-slate-300" : "bg-[#162456]"
       }`}
     >
       {loading ? (

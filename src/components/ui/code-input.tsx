@@ -39,7 +39,7 @@ export function CodeInput({ length, value, onChange, secure, autoFocus, error }:
                 error
                   ? "border-red-400 bg-red-50"
                   : isActive
-                    ? "border-[#208AEF] bg-white"
+                    ? "border-[#162456] bg-white"
                     : "border-slate-200 bg-white"
               }`}
             >

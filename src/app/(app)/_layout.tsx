@@ -14,8 +14,12 @@ export default function AppLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: "#208AEF",
-        tabBarInactiveTintColor: "#94a3b8",
+        tabBarActiveTintColor: "#FFFFFF",
+        tabBarInactiveTintColor: "rgba(255,255,255,0.55)",
+        tabBarStyle: {
+          backgroundColor: "#162456",
+          borderTopWidth: 0,
+        },
       }}
     >
       <Tabs.Screen

@@ -9,7 +9,7 @@ export default function Index() {
   if (!isHydrated) {
     return (
       <View className="flex-1 items-center justify-center bg-white">
-        <ActivityIndicator color="#208AEF" />
+        <ActivityIndicator color="#162456" />
       </View>
     );
   }

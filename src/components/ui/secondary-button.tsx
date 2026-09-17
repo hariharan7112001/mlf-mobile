@@ -9,7 +9,7 @@ type SecondaryButtonProps = {
 export function SecondaryButton({ label, onPress, disabled }: SecondaryButtonProps) {
   return (
     <Pressable onPress={onPress} disabled={disabled} className="items-center justify-center py-3">
-      <Text className={`text-sm font-medium ${disabled ? "text-slate-300" : "text-[#208AEF]"}`}>
+      <Text className={`text-sm font-medium ${disabled ? "text-slate-300" : "text-[#162456]"}`}>
         {label}
       </Text>
     </Pressable>
