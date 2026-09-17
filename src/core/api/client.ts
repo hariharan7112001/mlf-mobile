@@ -38,7 +38,7 @@ const AUTH_PATH_PREFIX = "/api/auth/";
 const DEFAULT_TIMEOUT_MS = 15000;
 
 type RequestOptions = {
-  method?: "GET" | "POST";
+  method?: "GET" | "POST" | "PATCH";
   body?: unknown;
   timeoutMs?: number;
 };
@@ -111,4 +111,8 @@ export function apiPost<T>(path: string, body?: unknown, timeoutMs?: number): Pr
 
 export function apiGet<T>(path: string, timeoutMs?: number): Promise<T> {
   return request<T>(path, { method: "GET", timeoutMs });
+}
+
+export function apiPatch<T>(path: string, body?: unknown, timeoutMs?: number): Promise<T> {
+  return request<T>(path, { method: "PATCH", body, timeoutMs });
 }

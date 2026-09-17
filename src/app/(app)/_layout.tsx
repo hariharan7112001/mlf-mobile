@@ -36,6 +36,9 @@ export default function AppLayout() {
           tabBarIcon: ({ color, size }) => <Ionicons name="briefcase-outline" size={size} color={color} />,
         }}
       />
+      <Tabs.Screen name="leave" options={{ href: null }} />
+      <Tabs.Screen name="clients" options={{ href: null }} />
+      <Tabs.Screen name="appointments" options={{ href: null }} />
     </Tabs>
   );
 }
