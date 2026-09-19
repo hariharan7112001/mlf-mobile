@@ -4,7 +4,7 @@ import { ErrorMessage } from "@/components/ui/error-message";
 import { PrimaryButton } from "@/components/ui/primary-button";
 import { ApiError } from "@/core/api/client";
 import { getApiBaseUrl } from "@/core/env";
-import { useCheckIn, useCheckOut, useTodayAttendance } from "@/features/attendance/hooks";
+import { useAttendanceHistory, useCheckIn, useCheckOut } from "@/features/attendance/hooks";
 import { LocationError } from "@/features/attendance/lib/location";
 import { useLogout } from "@/features/auth/hooks";
 import { useAuthStore } from "@/features/auth/store";
@@ -21,23 +21,30 @@ function formatTime(iso: string): string {
 }
 
 function AttendanceCard() {
-  const { data: attendance, isLoading } = useTodayAttendance();
+  // Rows are date-desc, so [0] is the latest record. Mutations invalidate this query and stay
+  // pending until it refetches, so the button label flips only once the new state is known.
+  const { data: history, isLoading } = useAttendanceHistory();
   const checkIn = useCheckIn();
   const checkOut = useCheckOut();
   const [error, setError] = useState<string | undefined>();
 
   const isPending = checkIn.isPending || checkOut.isPending;
-  const checkedIn = Boolean(attendance?.checkInAt);
-  const checkedOut = Boolean(attendance?.checkOutAt);
+  const latest = history?.[0];
+  const checkedIn = Boolean(latest?.checkInAt) && !latest?.checkOutAt;
 
   async function handlePress() {
+    const action = checkedIn ? "out" : "in";
     setError(undefined);
     try {
-      if (!checkedIn) {
-        await checkIn.mutateAsync(undefined);
-      } else if (!checkedOut) {
-        await checkOut.mutateAsync(undefined);
-      }
+      const { attendance } =
+        action === "in"
+          ? await checkIn.mutateAsync(undefined)
+          : await checkOut.mutateAsync(undefined);
+      const recordedAt = action === "in" ? attendance.checkInAt : attendance.checkOutAt;
+      Alert.alert(
+        action === "in" ? "Checked in" : "Checked out",
+        recordedAt ? `Recorded at ${formatTime(recordedAt)}.` : "Recorded."
+      );
     } catch (err) {
       if (err instanceof LocationError || err instanceof ApiError) {
         setError(err.message);
@@ -49,37 +56,19 @@ function AttendanceCard() {
 
   return (
     <View className="rounded-2xl border border-slate-100 bg-slate-50 p-5 shadow-sm">
-      <View className="mb-3 flex-row items-center justify-between">
-        <Text className="text-sm font-medium text-slate-600">Today&apos;s attendance</Text>
-        <View
-          className={`h-2.5 w-2.5 rounded-full ${
-            checkedOut ? "bg-slate-300" : checkedIn ? "bg-emerald-500" : "bg-amber-400"
-          }`}
-        />
-      </View>
-
-      {isLoading ? null : checkedOut ? (
-        <Text className="mb-4 text-sm text-slate-500">
-          Checked in {formatTime(attendance!.checkInAt!)} · Checked out{" "}
-          {formatTime(attendance!.checkOutAt!)}
-        </Text>
-      ) : checkedIn ? (
-        <Text className="mb-4 text-sm text-slate-500">
-          Checked in at {formatTime(attendance!.checkInAt!)}
-        </Text>
-      ) : (
-        <Text className="mb-4 text-sm text-slate-500">You haven&apos;t checked in today.</Text>
-      )}
+      <Text className="text-sm font-medium text-slate-600">Attendance</Text>
+      <Text className="mb-4 mt-1 text-sm text-slate-500">
+        Your current location is captured each time you check in or out.
+      </Text>
 
       <ErrorMessage message={error} />
 
-      {!checkedOut ? (
-        <PrimaryButton
-          label={checkedIn ? "Check Out" : "Check In"}
-          onPress={handlePress}
-          loading={isPending}
-        />
-      ) : null}
+      <PrimaryButton
+        label={checkedIn ? "Check Out" : "Check In"}
+        onPress={handlePress}
+        loading={isPending}
+        disabled={isPending || isLoading}
+      />
     </View>
   );
 }

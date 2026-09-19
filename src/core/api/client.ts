@@ -85,7 +85,11 @@ export async function request<T>(path: string, options: RequestOptions = {}): Pr
   try {
     json = await response.json();
   } catch {
-    throw new ApiError("SERVER_ERROR", "Unexpected response from server.", response.status);
+    throw new ApiError(
+      "SERVER_ERROR",
+      `Unexpected response from server (HTTP ${response.status}).`,
+      response.status
+    );
   }
 
   if (json.ok) {
