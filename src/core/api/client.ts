@@ -38,10 +38,16 @@ const AUTH_PATH_PREFIX = "/api/auth/";
 const DEFAULT_TIMEOUT_MS = 15000;
 
 type RequestOptions = {
-  method?: "GET" | "POST" | "PATCH";
+  method?: "GET" | "POST" | "PATCH" | "DELETE";
   body?: unknown;
   timeoutMs?: number;
 };
+
+/** Bearer header for requests made outside `request` (e.g. file downloads). */
+export async function getAuthHeaders(): Promise<Record<string, string>> {
+  const token = await getToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
 
 export async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const { method = "POST", body, timeoutMs = DEFAULT_TIMEOUT_MS } = options;
@@ -49,9 +55,12 @@ export async function request<T>(path: string, options: RequestOptions = {}): Pr
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
 
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
-  const token = await getToken();
-  if (token) headers.Authorization = `Bearer ${token}`;
+  // FormData bodies (uploads) must let fetch set the multipart boundary itself.
+  const isFormData = typeof FormData !== "undefined" && body instanceof FormData;
+  const headers: Record<string, string> = {
+    ...(isFormData ? {} : { "Content-Type": "application/json" }),
+    ...(await getAuthHeaders()),
+  };
 
   const url = `${getApiBaseUrl()}${path}`;
 
@@ -60,7 +69,8 @@ export async function request<T>(path: string, options: RequestOptions = {}): Pr
     response = await fetch(url, {
       method,
       headers,
-      body: body !== undefined ? JSON.stringify(body) : undefined,
+      body:
+        body === undefined ? undefined : isFormData ? (body as FormData) : JSON.stringify(body),
       signal: controller.signal,
     });
   } catch (error) {
@@ -119,4 +129,13 @@ export function apiGet<T>(path: string, timeoutMs?: number): Promise<T> {
 
 export function apiPatch<T>(path: string, body?: unknown, timeoutMs?: number): Promise<T> {
   return request<T>(path, { method: "PATCH", body, timeoutMs });
+}
+
+export function apiDelete<T>(path: string, timeoutMs?: number): Promise<T> {
+  return request<T>(path, { method: "DELETE", timeoutMs });
+}
+
+/** Multipart upload — uploads get a longer default timeout than JSON calls. */
+export function apiUpload<T>(path: string, form: FormData, timeoutMs = 60000): Promise<T> {
+  return request<T>(path, { method: "POST", body: form, timeoutMs });
 }

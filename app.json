@@ -33,7 +33,8 @@
         {
           "locationWhenInUsePermission": "MLF needs your location to record check-in and check-out."
         }
-      ]
+      ],
+      "expo-sharing"
     ],
     "experiments": {
       "typedRoutes": true,

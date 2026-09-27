@@ -1,16 +1,17 @@
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AppHeader } from "@/components/app-header";
 import { FormScrollView } from "@/components/form-scroll-view";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { PillSelect } from "@/components/ui/pill-select";
 import { PrimaryButton } from "@/components/ui/primary-button";
-import { StatusBadge } from "@/components/ui/status-badge";
 import { TextArea } from "@/components/ui/text-area";
 import { TextField } from "@/components/ui/text-field";
 import { ApiError } from "@/core/api/client";
+import { usePermission } from "@/features/auth/permissions";
+import { CaseStatusBadge } from "@/features/cases/components/case-status-badge";
 import { GENDER_OPTIONS } from "@/features/clients/constants";
 import { useClient, useUpdateClient } from "@/features/clients/hooks";
 import { updateClientSchema } from "@/features/clients/schemas";
@@ -59,6 +60,7 @@ function ClientEditForm({ unitId, detail }: { unitId: string; detail: ClientDeta
   const updateClient = useUpdateClient(unitId);
   const [form, setForm] = useState<FormState>(() => toFormState(detail.client));
   const [error, setError] = useState<string | undefined>();
+  const canCreateCase = usePermission("cases", "create");
 
   function set<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -84,16 +86,35 @@ function ClientEditForm({ unitId, detail }: { unitId: string; detail: ClientDeta
     <FormScrollView>
       <ErrorMessage message={error} />
 
-      {detail.cases.length > 0 ? (
+      {detail.cases.length > 0 || canCreateCase ? (
         <View className="mb-5 rounded-2xl border border-slate-100 bg-slate-50 p-4">
-          <Text className="mb-2 text-sm font-medium text-slate-600">
-            Cases ({detail.cases.length})
-          </Text>
+          <View className="mb-2 flex-row items-center justify-between">
+            <Text className="text-sm font-medium text-slate-600">
+              Cases ({detail.cases.length})
+            </Text>
+            {canCreateCase ? (
+              <Pressable
+                onPress={() =>
+                  router.push({
+                    pathname: "/cases/new",
+                    params: { clientUnitId: detail.client.unitId, clientName: detail.client.name },
+                  })
+                }
+                hitSlop={6}
+              >
+                <Text className="text-sm font-semibold text-[#162456]">+ Register case</Text>
+              </Pressable>
+            ) : null}
+          </View>
           {detail.cases.map((c) => (
-            <View key={c.unitId} className="mb-2 flex-row items-center justify-between">
+            <Pressable
+              key={c.unitId}
+              onPress={() => router.push({ pathname: "/cases/[unitId]", params: { unitId: c.unitId } })}
+              className="mb-2 flex-row items-center justify-between py-1 active:opacity-60"
+            >
               <Text className="text-sm text-slate-900">{c.caseNumber ?? c.unitId}</Text>
-              <StatusBadge status={c.status} />
-            </View>
+              <CaseStatusBadge status={c.status} />
+            </Pressable>
           ))}
         </View>
       ) : null}

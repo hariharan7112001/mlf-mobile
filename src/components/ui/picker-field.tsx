@@ -13,6 +13,7 @@ type PickerFieldProps = {
   search: string;
   onSearchChange: (value: string) => void;
   onSelect: (option: PickerOption) => void;
+  disabled?: boolean;
 };
 
 /** Text-field-styled trigger that opens a full-screen searchable list — used for advocate/client selection. */
@@ -25,6 +26,7 @@ export function PickerField({
   search,
   onSearchChange,
   onSelect,
+  disabled,
 }: PickerFieldProps) {
   const [open, setOpen] = useState(false);
 
@@ -33,7 +35,10 @@ export function PickerField({
       <Text className="mb-2 text-sm font-medium text-slate-600">{label}</Text>
       <Pressable
         onPress={() => setOpen(true)}
-        className="h-14 flex-row items-center justify-between rounded-xl border border-slate-200 bg-white px-4"
+        disabled={disabled}
+        className={`h-14 flex-row items-center justify-between rounded-xl border border-slate-200 px-4 ${
+          disabled ? "bg-slate-50" : "bg-white"
+        }`}
       >
         <Text
           className={`flex-1 text-base ${selectedLabel ? "text-slate-900" : "text-slate-400"}`}

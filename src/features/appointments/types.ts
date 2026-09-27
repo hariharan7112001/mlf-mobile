@@ -26,6 +26,14 @@ export type AppointmentSummary = {
   createdAt: string;
 };
 
+/** Mirrors parseDefaultCourts() in the backend's advocates route. */
+export type AdvocateDefaultCourt = {
+  state: string;
+  district: string;
+  city: string;
+  courtName: string;
+};
+
 export type AdvocateSummary = {
   unitId: string;
   name: string | null;
@@ -33,7 +41,7 @@ export type AdvocateSummary = {
   mobile: string;
   designation: string | null;
   photoUrl: string | null;
-  defaultCourts: string[];
+  defaultCourts: AdvocateDefaultCourt[];
 };
 
 export type AvailabilityWindow = { start: string; end: string };
